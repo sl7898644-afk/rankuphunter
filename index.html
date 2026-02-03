@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hunter System | Login</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --neon:#00e5ff;
+  --dark:#05080f;
+  --glass:rgba(255,255,255,0.08);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Orbitron',sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top,#0a1a2f,#000),
+    url('https://i.imgur.com/8Q1QZ4Y.png');
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+}
+
+/* Card */
+.auth-box{
+  width:360px;
+  background:var(--glass);
+  backdrop-filter:blur(15px);
+  border-radius:16px;
+  padding:30px;
+  box-shadow:0 0 30px #00e5ff55;
+  animation:fade 1s ease;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:scale(.9)}
+  to{opacity:1;transform:scale(1)}
+}
+
+.hunter-title{
+  text-align:center;
+  font-size:22px;
+  margin-bottom:5px;
+  color:var(--neon);
+}
+
+.sub{
+  text-align:center;
+  font-size:12px;
+  opacity:.7;
+  margin-bottom:25px;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border:none;
+  outline:none;
+  background:#020814;
+  color:white;
+  border-radius:8px;
+  box-shadow:inset 0 0 10px #00e5ff33;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  margin-top:15px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(135deg,#00e5ff,#0077ff);
+  color:#000;
+  font-weight:bold;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  box-shadow:0 0 20px var(--neon);
+  transform:scale(1.03);
+}
+
+.toggle{
+  text-align:center;
+  margin-top:15px;
+  font-size:12px;
+  cursor:pointer;
+  color:#aaa;
+}
+
+.toggle span{
+  color:var(--neon);
+}
+
+/* Hide Signup */
+#signup{
+  display:none;
+}
+
+/* Form validation styles */
+.input-error {
+  border: 2px solid #ff4757 !important;
+  box-shadow: inset 0 0 10px #ff475733 !important;
+}
+
+.error-message {
+  color: #ff6b81;
+  font-size: 12px;
+  margin-top: 5px;
+  display: none;
+}
+
+/* Loading spinner */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0,0,0,0.3);
+  border-radius: 50%;
+  border-top-color: #000;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-btn {
+  position: relative;
+  pointer-events: none;
+}
+
+.loading-btn .btn-text {
+  visibility: hidden;
+}
+
+.loading-btn .spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>
+</head>
+
+<body>
+
+<div class="auth-box">
+
+  <!-- LOGIN -->
+  <div id="login">
+    <div class="hunter-title">HUNTER LOGIN</div>
+    <div class="sub">Enter the Dungeon</div>
+
+    <input type="email" id="loginEmail" placeholder="Hunter Email">
+    <div class="error-message" id="loginEmailError"></div>
+    <div style="position: relative;">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <span id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #aaa;">👁️</span>
+    </div>
+    <div class="error-message" id="loginPasswordError"></div>
+
+    <button onclick="handleLogin()">Login</button>
+
+    <div class="toggle" onclick="showSignup()">
+      New Hunter? <span>Register</span>
+    </div>
+    <div class="toggle" onclick="showForgotPassword()">
+      Forgot Password? <span>Reset</span>
+    </div>
+    <div class="toggle" onclick="showAccountRecovery()">
+      Locked Out? <span>Recover Account</span>
+    </div>
+  </div>
+
+  <!-- SIGNUP -->
+  <div id="signup">
+    <div class="hunter-title">HUNTER REGISTRATION</div>
+    <div class="sub">Awaken Your Power</div>
+
+    <input type="text" id="signupName" placeholder="Hunter Name">
+    <div class="error-message" id="signupNameError"></div>
+    <input type="email" id="signupEmail" placeholder="Email">
+    <div class="error-message" id="signupEmailError"></div>
+    <input type="password" id="signupPassword" placeholder="Password">
+    <div class="error-message" id="signupPasswordError"></div>
+    <input type="password" id="confirmPassword" placeholder="Confirm Password">
+    <div class="error-message" id="confirmPasswordError"></div>
+    
+    <div style="margin: 15px 0; padding: 15px; background: rgba(0, 229, 255, 0.1); border-radius: 8px; border: 1px solid var(--neon);">
+      <div style="color: var(--neon); font-weight: bold; margin-bottom: 10px;">🔒 SECURITY CODE</div>
+      <div style="color: #fff; font-size: 14px; margin-bottom: 10px;">Remember this 6-digit code:</div>
+      <div id="securityCodeDisplay" style="font-size: 24px; font-weight: bold; letter-spacing: 5px; text-align: center; color: #ff6b6b; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; margin: 10px 0;">------</div>
+      <div style="color: #aaa; font-size: 12px;">This code will be required for password recovery</div>
+    </div>
+
+    <button onclick="handleSignup()">Create Account</button>
+
+    <div class="toggle" onclick="showLogin()">
+      Already a Hunter? <span>Login</span>
+    </div>
+  </div>
+
+  <!-- PASSWORD MANAGER -->
+  <div id="passwordManager" style="display:none;">
+    <div class="hunter-title">PASSWORD MANAGER</div>
+    <div class="sub">Manage your accounts</div>
+
+    <div id="accountList" style="margin-bottom: 20px; max-height: 200px; overflow-y: auto;">
+      <!-- Accounts will be listed here -->
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <select id="accountSelect" style="width: 100%; padding: 12px; background: #020814; color: white; border: none; border-radius: 8px; box-shadow: inset 0 0 10px #00e5ff33; margin-bottom: 10px;">
+        <option value="">Select an account</option>
+      </select>
+      <input type="password" id="newPasswordManager" placeholder="New Password">
+      <div class="error-message" id="newPasswordManagerError"></div>
+    </div>
+
+    <button onclick="changePassword()">Change Password</button>
+    <button onclick="deleteAccount()" style="background: linear-gradient(135deg, #ff4757, #ff6b81); margin-top: 10px;">Delete Account</button>
+
+    <div class="toggle" onclick="showLogin()">
+      Back to <span>Login</span>
+    </div>
+  </div>
+
+  <!-- ACCOUNT RECOVERY -->
+  <div id="accountRecovery" style="display:none;">
+    <div class="hunter-title">ACCOUNT RECOVERY</div>
+    <div class="sub">Recover your locked account</div>
+
+    <input type="email" id="recoveryEmail" placeholder="Enter your email">
+    <div class="error-message" id="recoveryEmailError"></div>
+    
+    <input type="text" id="recoveryHunterName" placeholder="Enter your Hunter Name">
+    <div class="error-message" id="recoveryHunterNameError"></div>
+    
+    <input type="text" id="recoverySecurityCode" placeholder="Enter your 6-digit Security Code" maxlength="6">
+    <div class="error-message" id="recoverySecurityCodeError"></div>
+    
+    <input type="password" id="recoveryNewPassword" placeholder="New Password">
+    <div class="error-message" id="recoveryNewPasswordError"></div>
+
+    <button onclick="handleAccountRecovery()">Recover Account</button>
+
+    <div class="toggle" onclick="showLogin()">
+      Back to <span>Login</span>
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD -->
+  <div id="forgotPassword" style="display:none;">
+    <div class="hunter-title">FORGOT PASSWORD</div>
+    <div class="sub">Reset your account password</div>
+
+    <input type="email" id="resetEmail" placeholder="Enter your email">
+    <div class="error-message" id="resetEmailError"></div>
+
+    <button onclick="handlePasswordReset()">Reset Password</button>
+
+    <div class="toggle" onclick="showLogin()">
+      Back to <span>Login</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// User data storage
+const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+
+function showSignup(){
+  document.getElementById("login").style.display="none";
+  document.getElementById("signup").style.display="block";
+}
+
+function showLogin(){
+  document.getElementById("signup").style.display="none";
+  document.getElementById("accountRecovery").style.display="none";
+  document.getElementById("passwordManager").style.display="none";
+  document.getElementById("forgotPassword").style.display="none";
+  document.getElementById("login").style.display="block";
+}
+
+function showPasswordManager(){
+  document.getElementById("login").style.display="none";
+  document.getElementById("signup").style.display="none";
+  document.getElementById("accountRecovery").style.display="none";
+  document.getElementById("forgotPassword").style.display="none";
+  document.getElementById("passwordManager").style.display="block";
+  loadAccountList();
+}
+
+function showAccountRecovery(){
+  document.getElementById("login").style.display="none";
+  document.getElementById("signup").style.display="none";
+  document.getElementById("forgotPassword").style.display="none";
+  document.getElementById("passwordManager").style.display="none";
+  document.getElementById("accountRecovery").style.display="block";
+}
+
+function showForgotPassword(){
+  document.getElementById("login").style.display="none";
+  document.getElementById("signup").style.display="none";
+  document.getElementById("accountRecovery").style.display="none";
+  document.getElementById("passwordManager").style.display="none";
+  document.getElementById("forgotPassword").style.display="block";
+}
+
+// Form validation helpers
+function showError(elementId, message) {
+  const errorElement = document.getElementById(elementId);
+  errorElement.textContent = message;
+  errorElement.style.display = 'block';
+  document.getElementById(elementId.replace('Error', '')).classList.add('input-error');
+}
+
+function hideError(elementId) {
+  const errorElement = document.getElementById(elementId);
+  errorElement.style.display = 'none';
+  document.getElementById(elementId.replace('Error', '')).classList.remove('input-error');
+}
+
+function validateEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
+function validatePassword(password) {
+  return password.length >= 6;
+}
+
+// Security enhancement: Track login attempts
+const loginAttempts = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOGIN_LOCKOUT_TIME = 30 * 60 * 1000; // 30 minutes
+
+// Login function with enhanced security and data persistence
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  // Clear previous errors
+  hideError('loginEmailError');
+  hideError('loginPasswordError');
+
+  let isValid = true;
+
+  // Validate inputs
+  if (!email) {
+    showError('loginEmailError', 'Email is required');
+    isValid = false;
+  } else if (!validateEmail(email)) {
+    showError('loginEmailError', 'Please enter a valid email');
+    isValid = false;
+  }
+
+  if (!password) {
+    showError('loginPasswordError', 'Password is required');
+    isValid = false;
+  } else if (!validatePassword(password)) {
+    showError('loginPasswordError', 'Password must be at least 6 characters');
+    isValid = false;
+  }
+
+  if (!isValid) return;
+
+  // Check for rate limiting
+  const now = Date.now();
+  const loginAttempts = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
+  if (loginAttempts[email]) {
+    const { attempts, lastAttempt } = loginAttempts[email];
+    if (attempts >= MAX_LOGIN_ATTEMPTS && (now - lastAttempt) < LOGIN_LOCKOUT_TIME) {
+      const remainingTime = Math.ceil((LOGIN_LOCKOUT_TIME - (now - lastAttempt)) / 60000);
+      showError('loginPasswordError', `Account locked. Too many failed attempts. Try again in ${remainingTime} minutes.`);
+      return;
+    }
+  }
+
+  // Show loading state
+  const loginBtn = document.querySelector('#login button');
+  loginBtn.classList.add('loading-btn');
+  loginBtn.innerHTML = '<span class="btn-text">Login</span><div class="spinner"></div>';
+
+  try {
+    // Check if user exists
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = users.find(u => u.email === email && u.password === password);
+
+    if (user) {
+      // Successful login - reset attempts for this user
+      if (loginAttempts[email]) {
+        delete loginAttempts[email];
+        localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
+      }
+      
+      // Ensure user data is normalized and complete
+      const normalizedUser = {
+        ...user, // Start with existing user data
+        xp: user.xp || user.exp || 0,
+        level: user.level || 1,
+        currentExp: user.currentExp || 0,
+        nextLevelExp: user.nextLevelExp || user.expToNextLevel || (user.level || 1) * 100,
+        workoutsCompleted: user.workoutsCompleted || user.trainingCount || 0,
+        streak: user.streak || 0,
+        lastTrainedDate: user.lastTrainedDate || null,
+        todayTrainings: user.todayTrainings || [],
+        email: user.email,
+        id: user.id || Date.now().toString(),
+        hunterName: user.hunterName || user.name || 'HUNTER',
+        profilePic: user.profilePic || user.profilePhoto
+      };
+      
+      // Set current user with session token
+      const sessionToken = btoa(`${email}:${Date.now()}:${Math.random()}`);
+      const currentUserData = {
+        ...normalizedUser,
+        sessionToken: sessionToken,
+        loginTime: now,
+        lastActive: now
+      };
+      
+      // CRITICAL: Save the updated user data back to the users array as well
+      const userIndex = users.findIndex(u => u.email === email);
+      if (userIndex !== -1) {
+        users[userIndex] = normalizedUser;
+        localStorage.setItem('users', JSON.stringify(users));
+      }
+      
+      localStorage.setItem('currentUser', JSON.stringify(currentUserData));
+      
+      // Redirect to main game dashboard
+      alert('Login successful! Welcome back, Hunter!');
+      
+      // Redirect to fitness dashboard
+      setTimeout(() => {
+        window.location.href = 'solo-leveling-fitness.html';
+      }, 1000);
+    } else {
+      // Failed login - record attempt
+      if (!loginAttempts[email]) {
+        loginAttempts[email] = { attempts: 0, lastAttempt: 0 };
+      }
+      loginAttempts[email].attempts += 1;
+      loginAttempts[email].lastAttempt = now;
+      localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
+      
+      const remainingAttempts = MAX_LOGIN_ATTEMPTS - loginAttempts[email].attempts;
+      if (remainingAttempts > 0) {
+        showError('loginPasswordError', `Invalid credentials. ${remainingAttempts} attempts remaining.`);
+      } else {
+        showError('loginPasswordError', 'Account locked due to too many failed attempts.');
+      }
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    alert('An error occurred during login. Please try again.');
+  } finally {
+    // Reset button state
+    loginBtn.classList.remove('loading-btn');
+    loginBtn.innerHTML = 'Login';
+  }
+}
+
+// Generate 6-digit security code
+function generateSecurityCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// Signup function
+async function handleSignup() {
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+  
+  // Generate security code
+  const securityCode = generateSecurityCode();
+  
+  // Display security code
+  document.getElementById('securityCodeDisplay').textContent = securityCode;
+
+  // Clear previous errors
+  hideError('signupNameError');
+  hideError('signupEmailError');
+  hideError('signupPasswordError');
+  hideError('confirmPasswordError');
+
+  let isValid = true;
+
+  // Validate inputs
+  if (!name) {
+    showError('signupNameError', 'Name is required');
+    isValid = false;
+  }
+
+  if (!email) {
+    showError('signupEmailError', 'Email is required');
+    isValid = false;
+  } else if (!validateEmail(email)) {
+    showError('signupEmailError', 'Please enter a valid email');
+    isValid = false;
+  }
+
+  if (!password) {
+    showError('signupPasswordError', 'Password is required');
+    isValid = false;
+  } else if (!validatePassword(password)) {
+    showError('signupPasswordError', 'Password must be at least 6 characters');
+    isValid = false;
+  }
+
+  if (!confirmPassword) {
+    showError('confirmPasswordError', 'Please confirm your password');
+    isValid = false;
+  } else if (password !== confirmPassword) {
+    showError('confirmPasswordError', 'Passwords do not match');
+    isValid = false;
+  }
+
+  if (!isValid) return;
+
+  // Show loading state
+  const signupBtn = document.querySelector('#signup button');
+  signupBtn.classList.add('loading-btn');
+  signupBtn.innerHTML = '<span class="btn-text">Create Account</span><div class="spinner"></div>';
+
+  try {
+    // Check if email already exists
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    if (users.find(u => u.email === email)) {
+      showError('signupEmailError', 'Email already registered');
+      return;
+    }
+
+    // Create new user with security code
+    const newUser = {
+      id: Date.now().toString(),
+      name: name,
+      email: email,
+      password: password,
+      securityCode: securityCode,
+      level: 1,
+      exp: 0,  // Start with 0 XP
+      expToNextLevel: 100,
+      strength: 10,
+      agility: 10,
+      endurance: 10,
+      trainingCount: 0,
+      lastTrained: null,
+      wins: 0,
+      losses: 0,
+      streak: 0,
+      achievements: [],
+      profilePhoto: '',  // Initially empty
+      dailyPhoto: '',
+      joinDate: new Date().toISOString(),
+      // Add normalized fields for fitness page compatibility
+      xp: 0,  // Start with 0 XP
+      currentExp: 0,
+      nextLevelExp: 100,
+      workoutsCompleted: 0,
+      hunterName: name,  // Use the entered name
+      profilePic: ''  // Initially empty
+    };
+
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+
+    // Set current user
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+
+    // Show security code alert
+    alert(`Account created successfully! Welcome, Hunter!
+
+🔒 YOUR SECURITY CODE: ${securityCode}
+
+IMPORTANT: Remember this code! You'll need it for password recovery.`);
+    
+    // Redirect to fitness dashboard
+    setTimeout(() => {
+      window.location.href = 'solo-leveling-fitness.html';
+    }, 1000);
+  } catch (error) {
+    console.error('Signup error:', error);
+    alert('An error occurred during registration. Please try again.');
+  } finally {
+    // Reset button state
+    signupBtn.classList.remove('loading-btn');
+    signupBtn.innerHTML = 'Create Account';
+  }
+}
+
+// Security enhancement: Track password reset attempts
+const resetAttempts = JSON.parse(localStorage.getItem('resetAttempts') || '{}');
+const MAX_RESET_ATTEMPTS = 3;
+const RESET_LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes
+
+// Password reset function with security
+async function handlePasswordReset() {
+  const email = document.getElementById('resetEmail').value.trim();
+
+  // Clear previous errors
+  hideError('resetEmailError');
+
+  if (!email) {
+    showError('resetEmailError', 'Email is required');
+    return;
+  }
+
+  if (!validateEmail(email)) {
+    showError('resetEmailError', 'Please enter a valid email');
+    return;
+  }
+
+  // Check for rate limiting
+  const now = Date.now();
+  if (resetAttempts[email]) {
+    const { attempts, lastAttempt } = resetAttempts[email];
+    if (attempts >= MAX_RESET_ATTEMPTS && (now - lastAttempt) < RESET_LOCKOUT_TIME) {
+      const remainingTime = Math.ceil((RESET_LOCKOUT_TIME - (now - lastAttempt)) / 60000);
+      showError('resetEmailError', `Too many attempts. Try again in ${remainingTime} minutes.`);
+      return;
+    }
+  }
+
+  // Show loading state
+  const resetBtn = document.querySelector('#forgotPassword button');
+  resetBtn.classList.add('loading-btn');
+  resetBtn.innerHTML = '<span class="btn-text">Reset Password</span><div class="spinner"></div>';
+
+  try {
+    // Check if user exists
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const userIndex = users.findIndex(u => u.email === email);
+
+    if (userIndex !== -1) {
+      // Security: Require current password for verification
+      const currentPassword = prompt('For security, please enter your current password:');
+      
+      if (!currentPassword) {
+        // User cancelled
+        return;
+      }
+      
+      // Verify current password
+      if (currentPassword !== users[userIndex].password) {
+        // Record failed attempt
+        if (!resetAttempts[email]) {
+          resetAttempts[email] = { attempts: 0, lastAttempt: 0 };
+        }
+        resetAttempts[email].attempts += 1;
+        resetAttempts[email].lastAttempt = now;
+        localStorage.setItem('resetAttempts', JSON.stringify(resetAttempts));
+        
+        showError('resetEmailError', 'Incorrect current password. Please try again.');
+        return;
+      }
+      
+      // Reset attempts on successful verification
+      delete resetAttempts[email];
+      localStorage.setItem('resetAttempts', JSON.stringify(resetAttempts));
+      
+      // Prompt for new password
+      const newPassword = prompt('Enter new password (minimum 6 characters):');
+      
+      if (newPassword && validatePassword(newPassword)) {
+        users[userIndex].password = newPassword;
+        localStorage.setItem('users', JSON.stringify(users));
+        alert('Password reset successfully!');
+        showLogin();
+      } else if (newPassword) {
+        alert('Password must be at least 6 characters long');
+      }
+    } else {
+      showError('resetEmailError', 'Email not found');
+    }
+  } catch (error) {
+    console.error('Password reset error:', error);
+    alert('An error occurred. Please try again.');
+  } finally {
+    // Reset button state
+    resetBtn.classList.remove('loading-btn');
+    resetBtn.innerHTML = 'Reset Password';
+  }
+}
+
+// Load account list for password manager
+function loadAccountList() {
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const accountList = document.getElementById('accountList');
+  const accountSelect = document.getElementById('accountSelect');
+  
+  // Clear existing content
+  accountList.innerHTML = '';
+  accountSelect.innerHTML = '<option value="">Select an account</option>';
+  
+  if (users.length === 0) {
+    accountList.innerHTML = '<div style="text-align: center; color: #7f8c8d; padding: 20px;">No accounts found</div>';
+    return;
+  }
+  
+  // Display accounts
+  users.forEach((user, index) => {
+    const accountDiv = document.createElement('div');
+    accountDiv.style.cssText = 'background: rgba(255,255,255,0.1); padding: 10px; margin: 5px 0; border-radius: 8px; border-left: 3px solid var(--neon);';
+    accountDiv.innerHTML = `
+      <div style="font-weight: bold; color: var(--neon);">${user.name}</div>
+      <div style="font-size: 12px; color: #aaa;">${user.email}</div>
+      <div style="font-size: 11px; color: #7f8c8d;">Level: ${user.level} | EXP: ${user.exp}/${user.expToNextLevel}</div>
+    `;
+    accountList.appendChild(accountDiv);
+    
+    // Add to dropdown
+    const option = document.createElement('option');
+    option.value = index;
+    option.textContent = `${user.name} (${user.email})`;
+    accountSelect.appendChild(option);
+  });
+}
+
+// Change password function
+function changePassword() {
+  const selectedIndex = document.getElementById('accountSelect').value;
+  const newPassword = document.getElementById('newPasswordManager').value;
+  
+  // Clear previous errors
+  hideError('newPasswordManagerError');
+  
+  if (!selectedIndex) {
+    showError('newPasswordManagerError', 'Please select an account');
+    return;
+  }
+  
+  if (!newPassword) {
+    showError('newPasswordManagerError', 'Please enter a new password');
+    return;
+  }
+  
+  if (!validatePassword(newPassword)) {
+    showError('newPasswordManagerError', 'Password must be at least 6 characters');
+    return;
+  }
+  
+  try {
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    users[selectedIndex].password = newPassword;
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    alert('Password changed successfully!');
+    document.getElementById('newPasswordManager').value = '';
+    document.getElementById('accountSelect').value = '';
+    loadAccountList();
+  } catch (error) {
+    console.error('Password change error:', error);
+    alert('An error occurred. Please try again.');
+  }
+}
+
+// Delete account function
+function deleteAccount() {
+  const selectedIndex = document.getElementById('accountSelect').value;
+  
+  if (!selectedIndex) {
+    alert('Please select an account to delete');
+    return;
+  }
+  
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const user = users[selectedIndex];
+  
+  if (confirm(`Are you sure you want to delete account: ${user.name} (${user.email})? This cannot be undone.`)) {
+    try {
+      users.splice(selectedIndex, 1);
+      localStorage.setItem('users', JSON.stringify(users));
+      
+      // Clear currentUser if it was the deleted account
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      if (currentUser.email === user.email) {
+        localStorage.removeItem('currentUser');
+      }
+      
+      alert('Account deleted successfully!');
+      document.getElementById('accountSelect').value = '';
+      loadAccountList();
+    } catch (error) {
+      console.error('Account deletion error:', error);
+      alert('An error occurred. Please try again.');
+    }
+  }
+}
+
+// Account recovery function
+function handleAccountRecovery() {
+  const email = document.getElementById('recoveryEmail').value.trim();
+  const hunterName = document.getElementById('recoveryHunterName').value.trim();
+  const securityCode = document.getElementById('recoverySecurityCode').value.trim();
+  const newPassword = document.getElementById('recoveryNewPassword').value;
+  
+  // Clear previous errors
+  hideError('recoveryEmailError');
+  hideError('recoveryHunterNameError');
+  hideError('recoverySecurityCodeError');
+  hideError('recoveryNewPasswordError');
+  
+  let isValid = true;
+  
+  // Validate inputs
+  if (!email) {
+    showError('recoveryEmailError', 'Email is required');
+    isValid = false;
+  } else if (!validateEmail(email)) {
+    showError('recoveryEmailError', 'Please enter a valid email');
+    isValid = false;
+  }
+  
+  if (!hunterName) {
+    showError('recoveryHunterNameError', 'Hunter name is required');
+    isValid = false;
+  }
+  
+  if (!securityCode) {
+    showError('recoverySecurityCodeError', 'Security code is required');
+    isValid = false;
+  } else if (securityCode.length !== 6 || !/^[0-9]+$/.test(securityCode)) {
+    showError('recoverySecurityCodeError', 'Please enter a valid 6-digit code');
+    isValid = false;
+  }
+  
+  if (!newPassword) {
+    showError('recoveryNewPasswordError', 'New password is required');
+    isValid = false;
+  } else if (!validatePassword(newPassword)) {
+    showError('recoveryNewPasswordError', 'Password must be at least 6 characters');
+    isValid = false;
+  }
+  
+  if (!isValid) return;
+  
+  // Show loading state
+  const recoveryBtn = document.querySelector('#accountRecovery button');
+  recoveryBtn.classList.add('loading-btn');
+  recoveryBtn.innerHTML = '<span class="btn-text">Recover Account</span><div class="spinner"></div>';
+  
+  try {
+    // Check if user exists
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const userIndex = users.findIndex(u => u.email === email);
+    
+    if (userIndex === -1) {
+      showError('recoveryEmailError', 'Email not found');
+      return;
+    }
+    
+    // Check if account is locked
+    const now = Date.now();
+    let isLocked = false;
+    let lockoutTimeRemaining = 0;
+    
+    // Check login lockout
+    if (loginAttempts[email]) {
+      const { attempts, lastAttempt } = loginAttempts[email];
+      if (attempts >= MAX_LOGIN_ATTEMPTS && (now - lastAttempt) < LOGIN_LOCKOUT_TIME) {
+        isLocked = true;
+        lockoutTimeRemaining = Math.ceil((LOGIN_LOCKOUT_TIME - (now - lastAttempt)) / 60000);
+      }
+    }
+    
+    // Check reset lockout
+    if (resetAttempts[email]) {
+      const { attempts, lastAttempt } = resetAttempts[email];
+      if (attempts >= MAX_RESET_ATTEMPTS && (now - lastAttempt) < RESET_LOCKOUT_TIME) {
+        isLocked = true;
+        const resetLockoutRemaining = Math.ceil((RESET_LOCKOUT_TIME - (now - lastAttempt)) / 60000);
+        lockoutTimeRemaining = Math.max(lockoutTimeRemaining, resetLockoutRemaining);
+      }
+    }
+    
+    if (isLocked) {
+      alert(`Account is locked. Please wait ${lockoutTimeRemaining} minutes before trying again.`);
+      return;
+    }
+    
+    // Verify hunter name and security code
+    const user = users[userIndex];
+    if (user.name !== hunterName) {
+      showError('recoveryHunterNameError', 'Hunter name does not match');
+      return;
+    }
+    
+    if (user.securityCode !== securityCode) {
+      showError('recoverySecurityCodeError', 'Invalid security code');
+      return;
+    }
+    
+    // Reset all security locks
+    delete loginAttempts[email];
+    delete resetAttempts[email];
+    localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
+    localStorage.setItem('resetAttempts', JSON.stringify(resetAttempts));
+    
+    // Update password
+    users[userIndex].password = newPassword;
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    alert('Account recovered successfully! You can now login with your new password.');
+    showLogin();
+    
+  } catch (error) {
+    console.error('Account recovery error:', error);
+    alert('An error occurred during recovery. Please try again.');
+  } finally {
+    // Reset button state
+    recoveryBtn.classList.remove('loading-btn');
+    recoveryBtn.innerHTML = 'Recover Account';
+  }
+}
+
+// Clear all login attempts (for development/testing purposes)
+function clearLoginAttempts() {
+  localStorage.removeItem('loginAttempts');
+  console.log('Login attempts cleared');
+}
+
+// Add this function to reset attempts when needed
+function resetUserLoginAttempts(email) {
+  const loginAttempts = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
+  delete loginAttempts[email];
+  localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
+}
+
+// Add enter key support
+document.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    const activeForm = document.querySelector('.auth-box > div:not([style*="display:none"])');
+    if (activeForm.id === 'login') {
+      handleLogin();
+    } else if (activeForm.id === 'signup') {
+      handleSignup();
+    } else if (activeForm.id === 'forgotPassword') {
+      handlePasswordReset();
+    }
+  }
+});
+
+// Clear old login attempts (older than lockout time) on page load
+window.addEventListener('load', function() {
+  const loginAttempts = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
+  const now = Date.now();
+  let hasChanges = false;
+  
+  for (const email in loginAttempts) {
+    const { lastAttempt } = loginAttempts[email];
+    // If the lockout period has expired, remove the entry
+    if (now - lastAttempt >= LOGIN_LOCKOUT_TIME) {
+      delete loginAttempts[email];
+      hasChanges = true;
+    }
+  }
+  
+  if (hasChanges) {
+    localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
+  }
+});
+
+document.getElementById('togglePassword').addEventListener('click', function() {
+  const passwordInput = document.getElementById('loginPassword');
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    this.textContent = '👁️‍🗨️';
+  } else {
+    passwordInput.type = 'password';
+    this.textContent = '👁️';
+  }
+});
+
+</script>
+
+</body>
+</html>
