@@ -138,6 +138,49 @@ button:hover{
   to { transform: rotate(360deg); }
 }
 
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .auth-box {
+    width: 95%;
+    max-width: 400px;
+    padding: 20px;
+    margin: 10px;
+  }
+  
+  .hunter-title {
+    font-size: 20px;
+  }
+  
+  input {
+    padding: 15px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  button {
+    padding: 15px;
+    font-size: 16px;
+  }
+  
+  .toggle {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-box {
+    width: 98%;
+    padding: 15px;
+  }
+  
+  .hunter-title {
+    font-size: 18px;
+  }
+  
+  input, button {
+    padding: 12px;
+  }
+}
+
 .loading-btn {
   position: relative;
   pointer-events: none;
@@ -379,17 +422,7 @@ async function handleLogin() {
 
   if (!isValid) return;
 
-  // Check for rate limiting
-  const now = Date.now();
-  const loginAttempts = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
-  if (loginAttempts[email]) {
-    const { attempts, lastAttempt } = loginAttempts[email];
-    if (attempts >= MAX_LOGIN_ATTEMPTS && (now - lastAttempt) < LOGIN_LOCKOUT_TIME) {
-      const remainingTime = Math.ceil((LOGIN_LOCKOUT_TIME - (now - lastAttempt)) / 60000);
-      showError('loginPasswordError', `Account locked. Too many failed attempts. Try again in ${remainingTime} minutes.`);
-      return;
-    }
-  }
+  // Rate limiting removed for better user experience
 
   // Show loading state
   const loginBtn = document.querySelector('#login button');
@@ -438,10 +471,49 @@ async function handleLogin() {
       const userIndex = users.findIndex(u => u.email === email);
       if (userIndex !== -1) {
         users[userIndex] = normalizedUser;
-        localStorage.setItem('users', JSON.stringify(users));
+        // Check users array storage
+        try {
+          localStorage.setItem('users', JSON.stringify(users));
+        } catch (usersError) {
+          console.error('Users storage error:', usersError);
+          if (usersError.name === 'QuotaExceededError') {
+            // Keep only recent users
+            const recentUsers = users.slice(-10);
+            localStorage.setItem('users', JSON.stringify(recentUsers));
+          } else {
+            throw usersError;
+          }
+        }
       }
       
-      localStorage.setItem('currentUser', JSON.stringify(currentUserData));
+      // Check localStorage quota and store minimal user data
+      try {
+        const minimalUserData = {
+          email: currentUserData.email,
+          hunterName: currentUserData.hunterName,
+          xp: currentUserData.xp,
+          level: currentUserData.level,
+          sessionToken: currentUserData.sessionToken,
+          loginTime: currentUserData.loginTime,
+          lastActive: currentUserData.lastActive
+        };
+        
+        localStorage.setItem('currentUser', JSON.stringify(minimalUserData));
+        console.log('User data stored successfully');
+      } catch (storageError) {
+        console.error('Storage error:', storageError);
+        if (storageError.name === 'QuotaExceededError') {
+          // Clear old data and try again
+          localStorage.removeItem('loginAttempts');
+          localStorage.setItem('currentUser', JSON.stringify({
+            email: currentUserData.email,
+            hunterName: currentUserData.hunterName,
+            sessionToken: currentUserData.sessionToken
+          }));
+        } else {
+          throw storageError;
+        }
+      }
       
       // Redirect to main game dashboard
       alert('Login successful! Welcome back, Hunter!');
@@ -451,24 +523,13 @@ async function handleLogin() {
         window.location.href = 'solo-leveling-fitness.html';
       }, 1000);
     } else {
-      // Failed login - record attempt
-      if (!loginAttempts[email]) {
-        loginAttempts[email] = { attempts: 0, lastAttempt: 0 };
-      }
-      loginAttempts[email].attempts += 1;
-      loginAttempts[email].lastAttempt = now;
-      localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
-      
-      const remainingAttempts = MAX_LOGIN_ATTEMPTS - loginAttempts[email].attempts;
-      if (remainingAttempts > 0) {
-        showError('loginPasswordError', `Invalid credentials. ${remainingAttempts} attempts remaining.`);
-      } else {
-        showError('loginPasswordError', 'Account locked due to too many failed attempts.');
-      }
+      // Failed login - simple error message
+      showError('loginPasswordError', 'Invalid email or password.');
     }
   } catch (error) {
     console.error('Login error:', error);
-    alert('An error occurred during login. Please try again.');
+    console.error('Error details:', error.message, error.stack);
+    alert(`Login failed: ${error.message || 'Unknown error'}\nPlease check your internet connection and try again.`);
   } finally {
     // Reset button state
     loginBtn.classList.remove('loading-btn');
@@ -992,4 +1053,3 @@ document.getElementById('togglePassword').addEventListener('click', function() {
 
 </body>
 </html>
-
