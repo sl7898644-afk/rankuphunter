@@ -498,14 +498,17 @@ body {
   .nav-container {
     flex-direction: column;
     gap: 15px;
+    padding: 10px;
   }
   
   .dashboard-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
   
   .exercises-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
   
   .stat-value {
@@ -514,6 +517,47 @@ body {
   
   .section-title {
     font-size: 24px;
+  }
+  
+  .card {
+    padding: 20px;
+  }
+  
+  .day-btn {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+  
+  .exercise-card {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .header {
+    padding: 15px;
+  }
+  
+  .profile-pic {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .stat-value {
+    font-size: 28px;
+  }
+  
+  .card {
+    padding: 15px;
+  }
+  
+  .day-btn {
+    padding: 8px 12px;
+    font-size: 12px;
   }
 }
 </style>
@@ -1219,9 +1263,9 @@ function loadLeaderboard() {
     return normalizedUser;
   });
   
-  // Filter and sort users
+  // Show all registered users sorted by XP
   const allUsers = normalizedUsers
-    .filter(user => user.email) // Only users with email
+    .filter(user => user.email && user.hunterName) // Users with email and hunter name
     .sort((a, b) => (b.xp || 0) - (a.xp || 0)); // Sort by XP descending
   
   console.log('Filtered and sorted users for leaderboard:', allUsers);
