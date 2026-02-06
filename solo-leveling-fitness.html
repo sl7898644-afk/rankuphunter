@@ -530,6 +530,35 @@ body {
   
   .exercise-card {
     padding: 15px;
+    margin: 10px 5px;
+  }
+  
+  .start-btn {
+    padding: 10px 15px !important;
+    font-size: 14px !important;
+    margin: 8px 0;
+  }
+  
+  .exercise-card button {
+    width: 100% !important;
+    margin: 5px 0;
+  }
+  
+  .exercises-grid {
+    gap: 10px;
+  }
+  
+  .exercise-card {
+    margin: 8px 0;
+  }
+  
+  .start-btn {
+    min-height: 44px; /* Touch-friendly size */
+  }
+  
+  .day-btn {
+    min-height: 40px;
+    margin: 5px;
   }
 }
 
@@ -922,7 +951,10 @@ function initApp() {
   
   loadUserData();
   populateDaySelector();
-  loadLeaderboard();
+  // Load leaderboard after a small delay to ensure data is ready
+  setTimeout(() => {
+    loadLeaderboard();
+  }, 300);
   checkProfileCompletion();
   updateTrainingLimitInfo();
   initWorkoutTracker(); // Initialize workout tracker
@@ -1217,7 +1249,9 @@ function completeWorkout(day, exerciseIndex) {
   
   // Refresh UI
   loadUserData();
-  loadLeaderboard();
+  setTimeout(() => {
+    loadLeaderboard(); // Delay to ensure data is saved
+  }, 500);
   alert('Workout completed! XP awarded!');
 }
 
