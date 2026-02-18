@@ -1025,15 +1025,16 @@ function loadUserData() {
   }
   
   // Update profile picture - ensure it's properly loaded
-  if (currentUser.profilePic) {
-    const profilePicElement = document.getElementById('profilePicture');
+  const profilePicElement = document.getElementById('profilePicture');
+  if (currentUser.profilePic && currentUser.profilePic.length > 0 && 
+      currentUser.profilePic !== 'undefined' && currentUser.profilePic !== 'null' &&
+      currentUser.profilePic !== 'none') {
     profilePicElement.style.backgroundImage = `url('${currentUser.profilePic}')`;
     profilePicElement.style.backgroundSize = 'cover';
     profilePicElement.style.backgroundPosition = 'center';
     profilePicElement.textContent = '';
-  } else if (currentUser.profilePhoto) {
+  } else if (currentUser.profilePhoto && currentUser.profilePhoto.length > 0) {
     // Handle legacy profilePhoto field from signup page
-    const profilePicElement = document.getElementById('profilePicture');
     profilePicElement.style.backgroundImage = `url('${currentUser.profilePhoto}')`;
     profilePicElement.style.backgroundSize = 'cover';
     profilePicElement.style.backgroundPosition = 'center';
@@ -1363,8 +1364,11 @@ function openProfileModal() {
   const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
   document.getElementById('hunterNameInput').value = currentUser.hunterName || '';
   
-  if (currentUser.profilePic) {
-    document.getElementById('uploadPreview').style.backgroundImage = `url(${currentUser.profilePic})`;
+  if (currentUser.profilePic && currentUser.profilePic.length > 0 && 
+      currentUser.profilePic !== 'undefined' && currentUser.profilePic !== 'null') {
+    document.getElementById('uploadPreview').style.backgroundImage = `url('${currentUser.profilePic}')`;
+    document.getElementById('uploadPreview').style.backgroundSize = 'cover';
+    document.getElementById('uploadPreview').style.backgroundPosition = 'center';
     document.getElementById('uploadPreview').textContent = '';
   }
 }
@@ -1403,11 +1407,18 @@ function saveProfile() {
   const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
   const users = JSON.parse(localStorage.getItem('users') || '[]');
   
+  // Extract the actual data URI from the CSS url() format
+  let profilePicData = profilePic;
+  if (profilePic.startsWith('url(')) {
+    // Remove url(" from start and ") from end
+    profilePicData = profilePic.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+  }
+  
   // Create updated user object with all current data
   const updatedUser = {
     ...currentUser,
     hunterName: hunterName,
-    profilePic: profilePic.replace('url("', '').replace('")', ''),
+    profilePic: profilePicData,
     // Ensure all data fields are preserved
     xp: currentUser.xp || currentUser.exp || 0,
     level: currentUser.level || 1,
