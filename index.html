@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hunter System | Login</title>
+<title>Hunter System | Professional Login</title>
 
 <!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
@@ -13,6 +13,8 @@
   --neon:#00e5ff;
   --dark:#05080f;
   --glass:rgba(255,255,255,0.08);
+  --accent-red: #ff4757;
+  --accent-green: #2ed573;
 }
 
 *{
@@ -31,351 +33,549 @@ body{
   justify-content:center;
   align-items:center;
   color:white;
+  overflow: auto;
 }
 
-/* Card */
-.auth-box{
-  width:360px;
+/* Main Card */
+.auth-container{
+  width:420px;
   background:var(--glass);
   backdrop-filter:blur(15px);
   border-radius:16px;
-  padding:30px;
-  box-shadow:0 0 30px #00e5ff55;
-  animation:fade 1s ease;
+  padding:40px;
+  box-shadow:0 0 40px #00e5ff55, 0 0 60px rgba(0,229,255,0.2);
+  animation:slideIn 0.6s ease;
+  margin: 20px;
 }
 
-@keyframes fade{
-  from{opacity:0;transform:scale(.9)}
-  to{opacity:1;transform:scale(1)}
+@keyframes slideIn{
+  from{
+    opacity:0;
+    transform:translateY(-30px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
-.hunter-title{
+/* Header */
+.auth-header{
   text-align:center;
-  font-size:22px;
-  margin-bottom:5px;
+  margin-bottom:35px;
+}
+
+.auth-title{
+  font-size:28px;
+  font-weight:600;
   color:var(--neon);
+  text-shadow:0 0 10px #00e5ff;
+  margin-bottom:8px;
+  letter-spacing:2px;
 }
 
-.sub{
-  text-align:center;
+.auth-subtitle{
+  font-size:13px;
+  color:#aaa;
+  opacity:0.8;
+}
+
+/* Form Group */
+.form-group{
+  margin-bottom:18px;
+}
+
+.form-label{
+  display:block;
   font-size:12px;
-  opacity:.7;
-  margin-bottom:25px;
+  color:var(--neon);
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+.input-wrapper{
+  position:relative;
 }
 
 input{
   width:100%;
-  padding:12px;
-  margin:10px 0;
-  border:none;
+  padding:14px 16px;
+  border:2px solid rgba(0,229,255,0.3);
   outline:none;
-  background:#020814;
+  background:#050a15;
   color:white;
   border-radius:8px;
-  box-shadow:inset 0 0 10px #00e5ff33;
+  box-shadow:inset 0 0 15px rgba(0,229,255,0.1);
+  transition:all 0.3s ease;
+  font-size:14px;
 }
 
-button{
-  width:100%;
-  padding:12px;
-  margin-top:15px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(135deg,#00e5ff,#0077ff);
-  color:#000;
-  font-weight:bold;
+input:focus{
+  border-color:var(--neon);
+  box-shadow:
+    inset 0 0 15px rgba(0,229,255,0.1),
+    0 0 15px rgba(0,229,255,0.4);
+  background:#0a0f1a;
+}
+
+input.error{
+  border-color:var(--accent-red);
+  box-shadow:
+    inset 0 0 15px rgba(255,71,87,0.1),
+    0 0 15px rgba(255,71,87,0.2);
+}
+
+/* Password Toggle */
+.password-toggle{
+  position:absolute;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
   cursor:pointer;
-  transition:.3s;
+  font-size:18px;
+  color:#666;
+  transition:color 0.3s ease;
 }
 
-button:hover{
-  box-shadow:0 0 20px var(--neon);
-  transform:scale(1.03);
-}
-
-.toggle{
-  text-align:center;
-  margin-top:15px;
-  font-size:12px;
-  cursor:pointer;
-  color:#aaa;
-}
-
-.toggle span{
+.password-toggle:hover{
   color:var(--neon);
 }
 
-/* Hide Signup */
-#signup{
+/* Error Message */
+.error-text{
+  display:none;
+  color:var(--accent-red);
+  font-size:12px;
+  margin-top:6px;
+  padding:6px;
+  background:rgba(255,71,87,0.1);
+  border-left:3px solid var(--accent-red);
+  border-radius:3px;
+}
+
+.error-text.show{
+  display:block;
+  animation:slideDown 0.3s ease;
+}
+
+@keyframes slideDown{
+  from{
+    opacity:0;
+    transform:translateY(-5px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* Buttons */
+.btn{
+  width:100%;
+  padding:14px;
+  margin-top:20px;
+  border:none;
+  border-radius:8px;
+  background:linear-gradient(135deg,#00e5ff,#0077ff);
+  color:#000;
+  font-weight:bold;
+  font-size:14px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  position:relative;
+  overflow:hidden;
+}
+
+.btn:hover{
+  box-shadow:0 0 25px #00e5ff;
+  transform:translateY(-2px);
+}
+
+.btn:active{
+  transform:translateY(0);
+}
+
+.btn.loading{
+  pointer-events:none;
+  opacity:0.8;
+}
+
+.btn-spinner{
+  display:inline-block;
+  width:16px;
+  height:16px;
+  border:2px solid rgba(0,0,0,0.3);
+  border-radius:50%;
+  border-top-color:#000;
+  animation:spin 0.8s linear infinite;
+  margin-right:8px;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
+
+/* Divider */
+.divider{
+  display:flex;
+  align-items:center;
+  margin:25px 0;
+}
+
+.divider-line{
+  flex:1;
+  height:1px;
+  background:rgba(0,229,255,0.2);
+}
+
+.divider-text{
+  padding:0 12px;
+  font-size:12px;
+  color:#666;
+  text-transform:uppercase;
+}
+
+/* Toggle Links */
+.toggle-section{
+  margin-top:25px;
+  text-align:center;
+}
+
+.toggle-link{
+  display:inline-block;
+  color:#aaa;
+  font-size:13px;
+  cursor:pointer;
+  transition:color 0.3s ease;
+  margin:0 8px;
+}
+
+.toggle-link:hover{
+  color:var(--neon);
+}
+
+.toggle-link strong{
+  color:var(--neon);
+}
+
+/* Hidden Forms */
+.auth-form{
   display:none;
 }
 
-/* Form validation styles */
-.input-error {
-  border: 2px solid #ff4757 !important;
-  box-shadow: inset 0 0 10px #ff475733 !important;
+.auth-form.active{
+  display:block;
+  animation:fadeIn 0.3s ease;
 }
 
-.error-message {
-  color: #ff6b81;
-  font-size: 12px;
-  margin-top: 5px;
-  display: none;
+@keyframes fadeIn{
+  from{opacity:0;}
+  to{opacity:1;}
 }
 
-/* Loading spinner */
-.spinner {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(0,0,0,0.3);
-  border-radius: 50%;
-  border-top-color: #000;
-  animation: spin 1s ease-in-out infinite;
+/* Success Alert */
+.success-alert{
+  display:none;
+  background:rgba(46,213,115,0.2);
+  border:2px solid var(--accent-green);
+  border-radius:8px;
+  padding:15px;
+  margin-bottom:20px;
+  font-size:13px;
+  color:var(--accent-green);
+  text-align:center;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.success-alert.show{
+  display:block;
+  animation:slideDown 0.3s ease;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  .auth-box {
-    width: 95%;
-    max-width: 400px;
-    padding: 20px;
-    margin: 10px;
+/* Security Code Box */
+.security-box{
+  background:rgba(0,229,255,0.1);
+  border:2px solid var(--neon);
+  border-radius:8px;
+  padding:15px;
+  margin:20px 0;
+  text-align:center;
+}
+
+.security-code{
+  font-size:28px;
+  font-weight:bold;
+  letter-spacing:8px;
+  color:var(--accent-red);
+  background:rgba(0,0,0,0.3);
+  padding:12px;
+  border-radius:5px;
+  margin:10px 0;
+  font-family:monospace;
+}
+
+.security-note{
+  font-size:11px;
+  color:#aaa;
+  margin-top:10px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .auth-container {
+    width:95%;
+    padding:25px;
   }
   
-  .hunter-title {
-    font-size: 20px;
+  .auth-title {
+    font-size:22px;
   }
   
   input {
-    padding: 15px;
-    font-size: 16px; /* Prevents zoom on iOS */
+    padding:12px 14px;
   }
   
-  button {
-    padding: 15px;
-    font-size: 16px;
+  .btn {
+    padding:12px;
   }
-  
-  .toggle {
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .auth-box {
-    width: 98%;
-    padding: 15px;
-  }
-  
-  .hunter-title {
-    font-size: 18px;
-  }
-  
-  input, button {
-    padding: 12px;
-  }
-}
-
-.loading-btn {
-  position: relative;
-  pointer-events: none;
-}
-
-.loading-btn .btn-text {
-  visibility: hidden;
-}
-
-.loading-btn .spinner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
 }
 </style>
 </head>
 
 <body>
 
-<div class="auth-box">
+<div class="auth-container">
+  <!-- SUCCESS ALERT -->
+  <div class="success-alert" id="successAlert"></div>
 
-  <!-- LOGIN -->
-  <div id="login">
-    <div class="hunter-title">HUNTER LOGIN</div>
-    <div class="sub">Enter the Dungeon</div>
-
-    <input type="email" id="loginEmail" placeholder="Hunter Email">
-    <div class="error-message" id="loginEmailError"></div>
-    <div style="position: relative;">
-      <input type="password" id="loginPassword" placeholder="Password">
-      <span id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #aaa;">👁️</span>
-    </div>
-    <div class="error-message" id="loginPasswordError"></div>
-
-    <button onclick="handleLogin()">Login</button>
-
-    <div class="toggle" onclick="showSignup()">
-      New Hunter? <span>Register</span>
-    </div>
-    <div class="toggle" onclick="showForgotPassword()">
-      Forgot Password? <span>Reset</span>
-    </div>
-    <div class="toggle" onclick="showAccountRecovery()">
-      Locked Out? <span>Recover Account</span>
-    </div>
-  </div>
-
-  <!-- SIGNUP -->
-  <div id="signup">
-    <div class="hunter-title">HUNTER REGISTRATION</div>
-    <div class="sub">Awaken Your Power</div>
-
-    <input type="text" id="signupName" placeholder="Hunter Name">
-    <div class="error-message" id="signupNameError"></div>
-    <input type="email" id="signupEmail" placeholder="Email">
-    <div class="error-message" id="signupEmailError"></div>
-    <input type="password" id="signupPassword" placeholder="Password">
-    <div class="error-message" id="signupPasswordError"></div>
-    <input type="password" id="confirmPassword" placeholder="Confirm Password">
-    <div class="error-message" id="confirmPasswordError"></div>
-    
-    <div style="margin: 15px 0; padding: 15px; background: rgba(0, 229, 255, 0.1); border-radius: 8px; border: 1px solid var(--neon);">
-      <div style="color: var(--neon); font-weight: bold; margin-bottom: 10px;">🔒 SECURITY CODE</div>
-      <div style="color: #fff; font-size: 14px; margin-bottom: 10px;">Remember this 6-digit code:</div>
-      <div id="securityCodeDisplay" style="font-size: 24px; font-weight: bold; letter-spacing: 5px; text-align: center; color: #ff6b6b; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px; margin: 10px 0;">------</div>
-      <div style="color: #aaa; font-size: 12px;">This code will be required for password recovery</div>
+  <!-- LOGIN FORM -->
+  <div class="auth-form active" id="loginForm">
+    <div class="auth-header">
+      <div class="auth-title">HUNTER LOGIN</div>
+      <div class="auth-subtitle">Enter the Dungeon</div>
     </div>
 
-    <button onclick="handleSignup()">Create Account</button>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <div class="input-wrapper">
+        <input type="email" id="loginEmail" placeholder="your-email@example.com">
+      </div>
+      <div class="error-text" id="loginEmailError"></div>
+    </div>
 
-    <div class="toggle" onclick="showLogin()">
-      Already a Hunter? <span>Login</span>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <div class="input-wrapper">
+        <input type="password" id="loginPassword" placeholder="••••••••">
+        <span class="password-toggle" onclick="togglePasswordVisibility('loginPassword')">👁️</span>
+      </div>
+      <div class="error-text" id="loginPasswordError"></div>
+    </div>
+
+    <button class="btn" onclick="handleLogin()">
+      <span class="btn-text">LOGIN</span>
+    </button>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">New Here?</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="toggle-section">
+      <span class="toggle-link" onclick="switchForm('signupForm')">Create Account</span>
+      <span style="color:#555;">•</span>
+      <span class="toggle-link" onclick="switchForm('resetForm')">Forgot Password?</span>
     </div>
   </div>
 
-  <!-- PASSWORD MANAGER -->
-  <div id="passwordManager" style="display:none;">
-    <div class="hunter-title">PASSWORD MANAGER</div>
-    <div class="sub">Manage your accounts</div>
-
-    <div id="accountList" style="margin-bottom: 20px; max-height: 200px; overflow-y: auto;">
-      <!-- Accounts will be listed here -->
+  <!-- SIGNUP FORM -->
+  <div class="auth-form" id="signupForm">
+    <div class="auth-header">
+      <div class="auth-title">HUNTER REGISTRATION</div>
+      <div class="auth-subtitle">Awaken Your Power</div>
     </div>
 
-    <div style="margin-bottom: 15px;">
-      <select id="accountSelect" style="width: 100%; padding: 12px; background: #020814; color: white; border: none; border-radius: 8px; box-shadow: inset 0 0 10px #00e5ff33; margin-bottom: 10px;">
-        <option value="">Select an account</option>
-      </select>
-      <input type="password" id="newPasswordManager" placeholder="New Password">
-      <div class="error-message" id="newPasswordManagerError"></div>
+    <div class="form-group">
+      <label class="form-label">Hunter Name</label>
+      <div class="input-wrapper">
+        <input type="text" id="signupName" placeholder="Your Hunter Name">
+      </div>
+      <div class="error-text" id="signupNameError"></div>
     </div>
 
-    <button onclick="changePassword()">Change Password</button>
-    <button onclick="deleteAccount()" style="background: linear-gradient(135deg, #ff4757, #ff6b81); margin-top: 10px;">Delete Account</button>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <div class="input-wrapper">
+        <input type="email" id="signupEmail" placeholder="your-email@example.com">
+      </div>
+      <div class="error-text" id="signupEmailError"></div>
+    </div>
 
-    <div class="toggle" onclick="showLogin()">
-      Back to <span>Login</span>
+    <div class="form-group">
+      <label class="form-label">Password (min. 6 characters)</label>
+      <div class="input-wrapper">
+        <input type="password" id="signupPassword" placeholder="••••••••">
+        <span class="password-toggle" onclick="togglePasswordVisibility('signupPassword')">👁️</span>
+      </div>
+      <div class="error-text" id="signupPasswordError"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Confirm Password</label>
+      <div class="input-wrapper">
+        <input type="password" id="signupConfirm" placeholder="••••••••">
+        <span class="password-toggle" onclick="togglePasswordVisibility('signupConfirm')">👁️</span>
+      </div>
+      <div class="error-text" id="signupConfirmError"></div>
+    </div>
+
+    <div class="security-box">
+      <div style="font-size:12px; color:var(--neon); text-transform:uppercase; margin-bottom:8px;">🔒 Your Security Code</div>
+      <div class="security-code" id="securityCodeDisplay">------</div>
+      <div class="security-note">Save this code! You'll need it for account recovery.</div>
+    </div>
+
+    <button class="btn" onclick="handleSignup()">
+      <span class="btn-text">CREATE ACCOUNT</span>
+    </button>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="toggle-section">
+      <span class="toggle-link" onclick="switchForm('loginForm')">Back to <strong>Login</strong></span>
     </div>
   </div>
 
-  <!-- ACCOUNT RECOVERY -->
-  <div id="accountRecovery" style="display:none;">
-    <div class="hunter-title">ACCOUNT RECOVERY</div>
-    <div class="sub">Recover your locked account</div>
-
-    <input type="email" id="recoveryEmail" placeholder="Enter your email">
-    <div class="error-message" id="recoveryEmailError"></div>
-    
-    <input type="text" id="recoveryHunterName" placeholder="Enter your Hunter Name">
-    <div class="error-message" id="recoveryHunterNameError"></div>
-    
-    <input type="text" id="recoverySecurityCode" placeholder="Enter your 6-digit Security Code" maxlength="6">
-    <div class="error-message" id="recoverySecurityCodeError"></div>
-    
-    <input type="password" id="recoveryNewPassword" placeholder="New Password">
-    <div class="error-message" id="recoveryNewPasswordError"></div>
-
-    <button onclick="handleAccountRecovery()">Recover Account</button>
-
-    <div class="toggle" onclick="showLogin()">
-      Back to <span>Login</span>
+  <!-- PASSWORD RESET FORM -->
+  <div class="auth-form" id="resetForm">
+    <div class="auth-header">
+      <div class="auth-title">RESET PASSWORD</div>
+      <div class="auth-subtitle">Recover Your Account</div>
     </div>
-  </div>
 
-  <!-- FORGOT PASSWORD -->
-  <div id="forgotPassword" style="display:none;">
-    <div class="hunter-title">FORGOT PASSWORD</div>
-    <div class="sub">Reset your account password</div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <div class="input-wrapper">
+        <input type="email" id="resetEmail" placeholder="your-email@example.com">
+      </div>
+      <div class="error-text" id="resetEmailError"></div>
+    </div>
 
-    <input type="email" id="resetEmail" placeholder="Enter your email">
-    <div class="error-message" id="resetEmailError"></div>
+    <div class="form-group">
+      <label class="form-label">New Password</label>
+      <div class="input-wrapper">
+        <input type="password" id="resetNewPassword" placeholder="••••••••">
+        <span class="password-toggle" onclick="togglePasswordVisibility('resetNewPassword')">👁️</span>
+      </div>
+      <div class="error-text" id="resetNewPasswordError"></div>
+    </div>
 
-    <button onclick="handlePasswordReset()">Reset Password</button>
+    <div class="form-group">
+      <label class="form-label">Confirm New Password</label>
+      <div class="input-wrapper">
+        <input type="password" id="resetConfirmPassword" placeholder="••••••••">
+        <span class="password-toggle" onclick="togglePasswordVisibility('resetConfirmPassword')">👁️</span>
+      </div>
+      <div class="error-text" id="resetConfirmPasswordError"></div>
+    </div>
 
-    <div class="toggle" onclick="showLogin()">
-      Back to <span>Login</span>
+    <button class="btn" onclick="handlePasswordReset()">
+      <span class="btn-text">RESET PASSWORD</span>
+    </button>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="toggle-section">
+      <span class="toggle-link" onclick="switchForm('loginForm')">Back to <strong>Login</strong></span>
     </div>
   </div>
 </div>
 
 <script>
-// User data storage
-const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+// ===== UTILITY FUNCTIONS =====
 
-function showSignup(){
-  document.getElementById("login").style.display="none";
-  document.getElementById("signup").style.display="block";
+function switchForm(formId) {
+  document.querySelectorAll('.auth-form').forEach(form => {
+    form.classList.remove('active');
+  });
+  document.getElementById(formId).classList.add('active');
+  clearAllErrors();
+  document.querySelector('.success-alert').classList.remove('show');
+  
+  // Generate security code only when switching to signup form
+  if (formId === 'signupForm') {
+    const securityCodeDisplay = document.getElementById('securityCodeDisplay');
+    if (securityCodeDisplay && securityCodeDisplay.textContent === '------') {
+      securityCodeDisplay.textContent = generateSecurityCode();
+    }
+  }
 }
 
-function showLogin(){
-  document.getElementById("signup").style.display="none";
-  document.getElementById("accountRecovery").style.display="none";
-  document.getElementById("passwordManager").style.display="none";
-  document.getElementById("forgotPassword").style.display="none";
-  document.getElementById("login").style.display="block";
+function clearAllErrors() {
+  document.querySelectorAll('.error-text').forEach(el => {
+    el.textContent = '';
+    el.classList.remove('show');
+  });
+  document.querySelectorAll('input').forEach(input => {
+    input.classList.remove('error');
+  });
 }
 
-function showPasswordManager(){
-  document.getElementById("login").style.display="none";
-  document.getElementById("signup").style.display="none";
-  document.getElementById("accountRecovery").style.display="none";
-  document.getElementById("forgotPassword").style.display="none";
-  document.getElementById("passwordManager").style.display="block";
-  loadAccountList();
+function showError(inputId, errorId, message) {
+  const input = document.getElementById(inputId);
+  const errorEl = document.getElementById(errorId);
+  input.classList.add('error');
+  errorEl.textContent = message;
+  errorEl.classList.add('show');
 }
 
-function showAccountRecovery(){
-  document.getElementById("login").style.display="none";
-  document.getElementById("signup").style.display="none";
-  document.getElementById("forgotPassword").style.display="none";
-  document.getElementById("passwordManager").style.display="none";
-  document.getElementById("accountRecovery").style.display="block";
+function hideError(inputId, errorId) {
+  const input = document.getElementById(inputId);
+  const errorEl = document.getElementById(errorId);
+  input.classList.remove('error');
+  errorEl.classList.remove('show');
 }
 
-function showForgotPassword(){
-  document.getElementById("login").style.display="none";
-  document.getElementById("signup").style.display="none";
-  document.getElementById("accountRecovery").style.display="none";
-  document.getElementById("passwordManager").style.display="none";
-  document.getElementById("forgotPassword").style.display="block";
+function showSuccess(message) {
+  const alert = document.querySelector('.success-alert');
+  alert.textContent = message;
+  alert.classList.add('show');
 }
 
-// Form validation helpers
-function showError(elementId, message) {
-  const errorElement = document.getElementById(elementId);
-  errorElement.textContent = message;
-  errorElement.style.display = 'block';
-  document.getElementById(elementId.replace('Error', '')).classList.add('input-error');
+function setButtonLoading(button, isLoading) {
+  if (!button) return;
+  if (isLoading) {
+    button.classList.add('loading');
+    button.innerHTML = '<span class="btn-spinner"></span><span class="btn-text">PROCESSING...</span>';
+  } else {
+    button.classList.remove('loading');
+    button.innerHTML = '<span class="btn-text">LOGIN</span>';
+  }
 }
 
-function hideError(elementId) {
-  const errorElement = document.getElementById(elementId);
-  errorElement.style.display = 'none';
-  document.getElementById(elementId.replace('Error', '')).classList.remove('input-error');
+function togglePasswordVisibility(inputId) {
+  try {
+    const input = document.getElementById(inputId);
+    const toggle = event?.target;
+    if (!input || !toggle) return;
+    
+    if (input.type === 'password') {
+      input.type = 'text';
+      toggle.textContent = '👁️‍🗨️';
+    } else {
+      input.type = 'password';
+      toggle.textContent = '👁️';
+    }
+  } catch (e) {
+    console.error('Password toggle error:', e);
+  }
 }
 
 function validateEmail(email) {
@@ -383,672 +583,269 @@ function validateEmail(email) {
   return re.test(email);
 }
 
-function validatePassword(password) {
-  return password.length >= 6;
-}
-
-// Security enhancement: Track login attempts
-const loginAttempts = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
-const MAX_LOGIN_ATTEMPTS = 5;
-const LOGIN_LOCKOUT_TIME = 30 * 60 * 1000; // 30 minutes
-
-// Login function with enhanced security and data persistence
-async function handleLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-
-  // Clear previous errors
-  hideError('loginEmailError');
-  hideError('loginPasswordError');
-
-  let isValid = true;
-
-  // Validate inputs
-  if (!email) {
-    showError('loginEmailError', 'Email is required');
-    isValid = false;
-  } else if (!validateEmail(email)) {
-    showError('loginEmailError', 'Please enter a valid email');
-    isValid = false;
-  }
-
-  if (!password) {
-    showError('loginPasswordError', 'Password is required');
-    isValid = false;
-  } else if (!validatePassword(password)) {
-    showError('loginPasswordError', 'Password must be at least 6 characters');
-    isValid = false;
-  }
-
-  if (!isValid) return;
-
-  // Rate limiting removed for better user experience
-
-  // Show loading state
-  const loginBtn = document.querySelector('#login button');
-  loginBtn.classList.add('loading-btn');
-  loginBtn.innerHTML = '<span class="btn-text">Login</span><div class="spinner"></div>';
-
-  try {
-    // Check if user exists
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find(u => u.email === email && u.password === password);
-
-    if (user) {
-      // Successful login - reset attempts for this user
-      if (loginAttempts[email]) {
-        delete loginAttempts[email];
-        localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
-      }
-      
-      // Ensure user data is normalized and complete
-      const normalizedUser = {
-        ...user, // Start with existing user data
-        xp: user.xp || user.exp || 0,
-        level: user.level || 1,
-        currentExp: user.currentExp || 0,
-        nextLevelExp: user.nextLevelExp || user.expToNextLevel || (user.level || 1) * 100,
-        workoutsCompleted: user.workoutsCompleted || user.trainingCount || 0,
-        streak: user.streak || 0,
-        lastTrainedDate: user.lastTrainedDate || null,
-        todayTrainings: user.todayTrainings || [],
-        email: user.email,
-        id: user.id || Date.now().toString(),
-        hunterName: user.hunterName || user.name || 'HUNTER',
-        profilePic: user.profilePic || user.profilePhoto
-      };
-      
-      // Set current user with session token
-      const sessionToken = btoa(`${email}:${Date.now()}:${Math.random()}`);
-      const currentUserData = {
-        ...normalizedUser,
-        sessionToken: sessionToken,
-        loginTime: now,
-        lastActive: now
-      };
-      
-      // CRITICAL: Save the updated user data back to the users array as well
-      const userIndex = users.findIndex(u => u.email === email);
-      if (userIndex !== -1) {
-        users[userIndex] = normalizedUser;
-        // Check users array storage
-        try {
-          localStorage.setItem('users', JSON.stringify(users));
-        } catch (usersError) {
-          console.error('Users storage error:', usersError);
-          if (usersError.name === 'QuotaExceededError') {
-            // Keep only recent users
-            const recentUsers = users.slice(-10);
-            localStorage.setItem('users', JSON.stringify(recentUsers));
-          } else {
-            throw usersError;
-          }
-        }
-      }
-      
-      // Check localStorage quota and store minimal user data
-      try {
-        const minimalUserData = {
-          email: currentUserData.email,
-          hunterName: currentUserData.hunterName,
-          xp: currentUserData.xp,
-          level: currentUserData.level,
-          sessionToken: currentUserData.sessionToken,
-          loginTime: currentUserData.loginTime,
-          lastActive: currentUserData.lastActive
-        };
-        
-        localStorage.setItem('currentUser', JSON.stringify(minimalUserData));
-        console.log('User data stored successfully');
-      } catch (storageError) {
-        console.error('Storage error:', storageError);
-        if (storageError.name === 'QuotaExceededError') {
-          // Clear old data and try again
-          localStorage.removeItem('loginAttempts');
-          localStorage.setItem('currentUser', JSON.stringify({
-            email: currentUserData.email,
-            hunterName: currentUserData.hunterName,
-            sessionToken: currentUserData.sessionToken
-          }));
-        } else {
-          throw storageError;
-        }
-      }
-      
-      // Redirect to main game dashboard
-      alert('Login successful! Welcome back, Hunter!');
-      
-      // Redirect to fitness dashboard
-      setTimeout(() => {
-        window.location.href = 'solo-leveling-fitness.html';
-      }, 1000);
-    } else {
-      // Failed login - simple error message with registration reminder
-      showError('loginPasswordError', 'Invalid email or password.\nNote: Make sure you have registered first!');
-    }
-  } catch (error) {
-    console.error('Login error:', error);
-    console.error('Error details:', error.message, error.stack);
-    alert(`Login failed: ${error.message || 'Unknown error'}\nPlease make sure you have registered first and check your internet connection.`);
-  } finally {
-    // Reset button state
-    loginBtn.classList.remove('loading-btn');
-    loginBtn.innerHTML = 'Login';
-  }
-}
-
-// Generate 6-digit security code
 function generateSecurityCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Signup function
+// ===== LOGIN =====
+async function handleLogin() {
+  try {
+    clearAllErrors();
+    
+    const email = document.getElementById('loginEmail')?.value.trim() || '';
+    const password = document.getElementById('loginPassword')?.value || '';
+    
+    let isValid = true;
+    
+    if (!email) {
+      showError('loginEmail', 'loginEmailError', 'Email is required');
+      isValid = false;
+    } else if (!validateEmail(email)) {
+      showError('loginEmail', 'loginEmailError', 'Invalid email format');
+      isValid = false;
+    }
+    
+    if (!password) {
+      showError('loginPassword', 'loginPasswordError', 'Password is required');
+      isValid = false;
+    } else if (password.length < 6) {
+      showError('loginPassword', 'loginPasswordError', 'Password must be at least 6 characters');
+      isValid = false;
+    }
+    
+    if (!isValid) return;
+    
+    const btn = event?.target;
+    if (btn) setButtonLoading(btn, true);
+    
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const user = users.find(u => 
+      u.email.toLowerCase().trim() === email.toLowerCase().trim() && 
+      u.password.trim() === password.trim()
+    );
+    
+    if (user) {
+      const normalizedUser = {
+        ...user,
+        xp: user.xp || user.exp || 0,
+        level: user.level || 1,
+        currentExp: user.currentExp || 0,
+        nextLevelExp: user.nextLevelExp || (user.level || 1) * 100,
+        workoutsCompleted: user.workoutsCompleted || 0,
+        hunterName: user.hunterName || user.name || 'HUNTER',
+        profilePic: user.profilePic || user.profilePhoto || '',
+        loginTime: Date.now(),
+        lastActive: Date.now()
+      };
+      
+      localStorage.setItem('currentUser', JSON.stringify(normalizedUser));
+      showSuccess('✓ Login successful! Redirecting...');
+      setTimeout(() => {
+        window.location.href = 'solo-leveling-fitness.html';
+      }, 1000);
+    } else {
+      showError('loginPassword', 'loginPasswordError', 'Invalid email or password');
+      if (btn) setButtonLoading(btn, false);
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    showError('loginPassword', 'loginPasswordError', 'Login failed. Try again.');
+    const btn = event?.target;
+    if (btn) setButtonLoading(btn, false);
+  }
+}
+
+// ===== SIGNUP =====
 async function handleSignup() {
+  clearAllErrors();
+  
   const name = document.getElementById('signupName').value.trim();
   const email = document.getElementById('signupEmail').value.trim();
-  const password = document.getElementById('signupPassword').value;
-  const confirmPassword = document.getElementById('confirmPassword').value;
+  const password = document.getElementById('signupPassword').value.trim();
+  const confirm = document.getElementById('signupConfirm').value.trim();
   
-  // Generate security code
-  const securityCode = generateSecurityCode();
-  
-  // Display security code
-  document.getElementById('securityCodeDisplay').textContent = securityCode;
-
-  // Clear previous errors
-  hideError('signupNameError');
-  hideError('signupEmailError');
-  hideError('signupPasswordError');
-  hideError('confirmPasswordError');
-
   let isValid = true;
-
-  // Validate inputs
-  if (!name) {
-    showError('signupNameError', 'Name is required');
+  
+  if (!name || name.length < 2) {
+    showError('signupName', 'signupNameError', 'Hunter name must be at least 2 characters');
     isValid = false;
   }
-
+  
   if (!email) {
-    showError('signupEmailError', 'Email is required');
+    showError('signupEmail', 'signupEmailError', 'Email is required');
     isValid = false;
   } else if (!validateEmail(email)) {
-    showError('signupEmailError', 'Please enter a valid email');
+    showError('signupEmail', 'signupEmailError', 'Invalid email format');
     isValid = false;
   }
-
+  
   if (!password) {
-    showError('signupPasswordError', 'Password is required');
+    showError('signupPassword', 'signupPasswordError', 'Password is required');
     isValid = false;
-  } else if (!validatePassword(password)) {
-    showError('signupPasswordError', 'Password must be at least 6 characters');
-    isValid = false;
-  }
-
-  if (!confirmPassword) {
-    showError('confirmPasswordError', 'Please confirm your password');
-    isValid = false;
-  } else if (password !== confirmPassword) {
-    showError('confirmPasswordError', 'Passwords do not match');
+  } else if (password.length < 6) {
+    showError('signupPassword', 'signupPasswordError', 'Password must be at least 6 characters');
     isValid = false;
   }
-
+  
+  if (!confirm) {
+    showError('signupConfirm', 'signupConfirmError', 'Please confirm your password');
+    isValid = false;
+  } else if (password !== confirm) {
+    showError('signupConfirm', 'signupConfirmError', 'Passwords do not match');
+    isValid = false;
+  }
+  
   if (!isValid) return;
-
-  // Show loading state
-  const signupBtn = document.querySelector('#signup button');
-  signupBtn.classList.add('loading-btn');
-  signupBtn.innerHTML = '<span class="btn-text">Create Account</span><div class="spinner"></div>';
-
+  
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+    showError('signupEmail', 'signupEmailError', 'Email already registered');
+    return;
+  }
+  
+  const btn = event?.target;
+  if (btn) setButtonLoading(btn, true);
+  
   try {
-    // Check if email already exists
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    if (users.find(u => u.email === email)) {
-      showError('signupEmailError', 'Email already registered');
-      return;
-    }
-
-    // Create new user with security code
+    // Use the security code displayed on screen (already generated)
+    const securityCode = document.getElementById('securityCodeDisplay')?.textContent || generateSecurityCode();
+    
     const newUser = {
       id: Date.now().toString(),
       name: name,
+      hunterName: name,
       email: email,
       password: password,
       securityCode: securityCode,
       level: 1,
-      exp: 0,  // Start with 0 XP
-      expToNextLevel: 100,
-      strength: 10,
-      agility: 10,
-      endurance: 10,
-      trainingCount: 0,
-      lastTrained: null,
-      wins: 0,
-      losses: 0,
-      streak: 0,
-      achievements: [],
-      profilePhoto: '',  // Initially empty
-      dailyPhoto: '',
-      joinDate: new Date().toISOString(),
-      // Add normalized fields for fitness page compatibility
-      xp: 0,  // Start with 0 XP
+      xp: 0,
+      exp: 0,
       currentExp: 0,
       nextLevelExp: 100,
       workoutsCompleted: 0,
-      hunterName: name,  // Use the entered name
-      profilePic: ''  // Initially empty
+      streak: 0,
+      profilePic: '',
+      joinDate: new Date().toISOString()
     };
-
+    
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
-
-    // Set current user
     localStorage.setItem('currentUser', JSON.stringify(newUser));
-
-    // Show security code alert
-    alert(`Account created successfully! Welcome, Hunter!
-
-🔒 YOUR SECURITY CODE: ${securityCode}
-
-IMPORTANT: Remember this code! You'll need it for password recovery.`);
     
-    // Redirect to fitness dashboard
+    alert(`✓ Account created!\n\n🔒 Security Code: ${securityCode}\n\nSave this code for account recovery!`);
+    
     setTimeout(() => {
       window.location.href = 'solo-leveling-fitness.html';
-    }, 1000);
+    }, 1500);
   } catch (error) {
+    showError('signupEmail', 'signupEmailError', 'Registration failed. Try again.');
     console.error('Signup error:', error);
-    alert('An error occurred during registration. Please try again.');
-  } finally {
-    // Reset button state
-    signupBtn.classList.remove('loading-btn');
-    signupBtn.innerHTML = 'Create Account';
+    const btn = event?.target;
+    if (btn) setButtonLoading(btn, false);
   }
 }
 
-// Security enhancement: Track password reset attempts
-const resetAttempts = JSON.parse(localStorage.getItem('resetAttempts') || '{}');
-const MAX_RESET_ATTEMPTS = 3;
-const RESET_LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes
-
-// Password reset function with security
+// ===== PASSWORD RESET =====
 async function handlePasswordReset() {
+  clearAllErrors();
+  
   const email = document.getElementById('resetEmail').value.trim();
-
-  // Clear previous errors
-  hideError('resetEmailError');
-
-  if (!email) {
-    showError('resetEmailError', 'Email is required');
-    return;
-  }
-
-  if (!validateEmail(email)) {
-    showError('resetEmailError', 'Please enter a valid email');
-    return;
-  }
-
-  // Check for rate limiting
-  const now = Date.now();
-  if (resetAttempts[email]) {
-    const { attempts, lastAttempt } = resetAttempts[email];
-    if (attempts >= MAX_RESET_ATTEMPTS && (now - lastAttempt) < RESET_LOCKOUT_TIME) {
-      const remainingTime = Math.ceil((RESET_LOCKOUT_TIME - (now - lastAttempt)) / 60000);
-      showError('resetEmailError', `Too many attempts. Try again in ${remainingTime} minutes.`);
-      return;
-    }
-  }
-
-  // Show loading state
-  const resetBtn = document.querySelector('#forgotPassword button');
-  resetBtn.classList.add('loading-btn');
-  resetBtn.innerHTML = '<span class="btn-text">Reset Password</span><div class="spinner"></div>';
-
-  try {
-    // Check if user exists
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const userIndex = users.findIndex(u => u.email === email);
-
-    if (userIndex !== -1) {
-      // Security: Require current password for verification
-      const currentPassword = prompt('For security, please enter your current password:');
-      
-      if (!currentPassword) {
-        // User cancelled
-        return;
-      }
-      
-      // Verify current password
-      if (currentPassword !== users[userIndex].password) {
-        // Record failed attempt
-        if (!resetAttempts[email]) {
-          resetAttempts[email] = { attempts: 0, lastAttempt: 0 };
-        }
-        resetAttempts[email].attempts += 1;
-        resetAttempts[email].lastAttempt = now;
-        localStorage.setItem('resetAttempts', JSON.stringify(resetAttempts));
-        
-        showError('resetEmailError', 'Incorrect current password. Please try again.');
-        return;
-      }
-      
-      // Reset attempts on successful verification
-      delete resetAttempts[email];
-      localStorage.setItem('resetAttempts', JSON.stringify(resetAttempts));
-      
-      // Prompt for new password
-      const newPassword = prompt('Enter new password (minimum 6 characters):');
-      
-      if (newPassword && validatePassword(newPassword)) {
-        users[userIndex].password = newPassword;
-        localStorage.setItem('users', JSON.stringify(users));
-        alert('Password reset successfully!');
-        showLogin();
-      } else if (newPassword) {
-        alert('Password must be at least 6 characters long');
-      }
-    } else {
-      showError('resetEmailError', 'Email not found');
-    }
-  } catch (error) {
-    console.error('Password reset error:', error);
-    alert('An error occurred. Please try again.');
-  } finally {
-    // Reset button state
-    resetBtn.classList.remove('loading-btn');
-    resetBtn.innerHTML = 'Reset Password';
-  }
-}
-
-// Load account list for password manager
-function loadAccountList() {
-  const users = JSON.parse(localStorage.getItem('users') || '[]');
-  const accountList = document.getElementById('accountList');
-  const accountSelect = document.getElementById('accountSelect');
-  
-  // Clear existing content
-  accountList.innerHTML = '';
-  accountSelect.innerHTML = '<option value="">Select an account</option>';
-  
-  if (users.length === 0) {
-    accountList.innerHTML = '<div style="text-align: center; color: #7f8c8d; padding: 20px;">No accounts found</div>';
-    return;
-  }
-  
-  // Display accounts
-  users.forEach((user, index) => {
-    const accountDiv = document.createElement('div');
-    accountDiv.style.cssText = 'background: rgba(255,255,255,0.1); padding: 10px; margin: 5px 0; border-radius: 8px; border-left: 3px solid var(--neon);';
-    accountDiv.innerHTML = `
-      <div style="font-weight: bold; color: var(--neon);">${user.name}</div>
-      <div style="font-size: 12px; color: #aaa;">${user.email}</div>
-      <div style="font-size: 11px; color: #7f8c8d;">Level: ${user.level} | EXP: ${user.exp}/${user.expToNextLevel}</div>
-    `;
-    accountList.appendChild(accountDiv);
-    
-    // Add to dropdown
-    const option = document.createElement('option');
-    option.value = index;
-    option.textContent = `${user.name} (${user.email})`;
-    accountSelect.appendChild(option);
-  });
-}
-
-// Change password function
-function changePassword() {
-  const selectedIndex = document.getElementById('accountSelect').value;
-  const newPassword = document.getElementById('newPasswordManager').value;
-  
-  // Clear previous errors
-  hideError('newPasswordManagerError');
-  
-  if (!selectedIndex) {
-    showError('newPasswordManagerError', 'Please select an account');
-    return;
-  }
-  
-  if (!newPassword) {
-    showError('newPasswordManagerError', 'Please enter a new password');
-    return;
-  }
-  
-  if (!validatePassword(newPassword)) {
-    showError('newPasswordManagerError', 'Password must be at least 6 characters');
-    return;
-  }
-  
-  try {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    users[selectedIndex].password = newPassword;
-    localStorage.setItem('users', JSON.stringify(users));
-    
-    alert('Password changed successfully!');
-    document.getElementById('newPasswordManager').value = '';
-    document.getElementById('accountSelect').value = '';
-    loadAccountList();
-  } catch (error) {
-    console.error('Password change error:', error);
-    alert('An error occurred. Please try again.');
-  }
-}
-
-// Delete account function
-function deleteAccount() {
-  const selectedIndex = document.getElementById('accountSelect').value;
-  
-  if (!selectedIndex) {
-    alert('Please select an account to delete');
-    return;
-  }
-  
-  const users = JSON.parse(localStorage.getItem('users') || '[]');
-  const user = users[selectedIndex];
-  
-  if (confirm(`Are you sure you want to delete account: ${user.name} (${user.email})? This cannot be undone.`)) {
-    try {
-      users.splice(selectedIndex, 1);
-      localStorage.setItem('users', JSON.stringify(users));
-      
-      // Clear currentUser if it was the deleted account
-      const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-      if (currentUser.email === user.email) {
-        localStorage.removeItem('currentUser');
-      }
-      
-      alert('Account deleted successfully!');
-      document.getElementById('accountSelect').value = '';
-      loadAccountList();
-    } catch (error) {
-      console.error('Account deletion error:', error);
-      alert('An error occurred. Please try again.');
-    }
-  }
-}
-
-// Account recovery function
-function handleAccountRecovery() {
-  const email = document.getElementById('recoveryEmail').value.trim();
-  const hunterName = document.getElementById('recoveryHunterName').value.trim();
-  const securityCode = document.getElementById('recoverySecurityCode').value.trim();
-  const newPassword = document.getElementById('recoveryNewPassword').value;
-  
-  // Clear previous errors
-  hideError('recoveryEmailError');
-  hideError('recoveryHunterNameError');
-  hideError('recoverySecurityCodeError');
-  hideError('recoveryNewPasswordError');
+  const newPassword = document.getElementById('resetNewPassword').value.trim();
+  const confirmPassword = document.getElementById('resetConfirmPassword').value.trim();
   
   let isValid = true;
   
-  // Validate inputs
   if (!email) {
-    showError('recoveryEmailError', 'Email is required');
+    showError('resetEmail', 'resetEmailError', 'Email is required');
     isValid = false;
   } else if (!validateEmail(email)) {
-    showError('recoveryEmailError', 'Please enter a valid email');
-    isValid = false;
-  }
-  
-  if (!hunterName) {
-    showError('recoveryHunterNameError', 'Hunter name is required');
-    isValid = false;
-  }
-  
-  if (!securityCode) {
-    showError('recoverySecurityCodeError', 'Security code is required');
-    isValid = false;
-  } else if (securityCode.length !== 6 || !/^[0-9]+$/.test(securityCode)) {
-    showError('recoverySecurityCodeError', 'Please enter a valid 6-digit code');
+    showError('resetEmail', 'resetEmailError', 'Invalid email format');
     isValid = false;
   }
   
   if (!newPassword) {
-    showError('recoveryNewPasswordError', 'New password is required');
+    showError('resetNewPassword', 'resetNewPasswordError', 'New password is required');
     isValid = false;
-  } else if (!validatePassword(newPassword)) {
-    showError('recoveryNewPasswordError', 'Password must be at least 6 characters');
+  } else if (newPassword.length < 6) {
+    showError('resetNewPassword', 'resetNewPasswordError', 'Password must be at least 6 characters');
+    isValid = false;
+  }
+  
+  if (!confirmPassword) {
+    showError('resetConfirmPassword', 'resetConfirmPasswordError', 'Please confirm your password');
+    isValid = false;
+  } else if (newPassword !== confirmPassword) {
+    showError('resetConfirmPassword', 'resetConfirmPasswordError', 'Passwords do not match');
     isValid = false;
   }
   
   if (!isValid) return;
   
-  // Show loading state
-  const recoveryBtn = document.querySelector('#accountRecovery button');
-  recoveryBtn.classList.add('loading-btn');
-  recoveryBtn.innerHTML = '<span class="btn-text">Recover Account</span><div class="spinner"></div>';
+  const btn = event.target;
+  setButtonLoading(btn, true);
   
   try {
-    // Check if user exists
     const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const userIndex = users.findIndex(u => u.email === email);
+    const userIndex = users.findIndex(u => 
+      u.email.toLowerCase().trim() === email.toLowerCase().trim()
+    );
     
     if (userIndex === -1) {
-      showError('recoveryEmailError', 'Email not found');
+      showError('resetEmail', 'resetEmailError', 'Email not found');
       return;
     }
     
-    // Check if account is locked
-    const now = Date.now();
-    let isLocked = false;
-    let lockoutTimeRemaining = 0;
-    
-    // Check login lockout
-    if (loginAttempts[email]) {
-      const { attempts, lastAttempt } = loginAttempts[email];
-      if (attempts >= MAX_LOGIN_ATTEMPTS && (now - lastAttempt) < LOGIN_LOCKOUT_TIME) {
-        isLocked = true;
-        lockoutTimeRemaining = Math.ceil((LOGIN_LOCKOUT_TIME - (now - lastAttempt)) / 60000);
-      }
-    }
-    
-    // Check reset lockout
-    if (resetAttempts[email]) {
-      const { attempts, lastAttempt } = resetAttempts[email];
-      if (attempts >= MAX_RESET_ATTEMPTS && (now - lastAttempt) < RESET_LOCKOUT_TIME) {
-        isLocked = true;
-        const resetLockoutRemaining = Math.ceil((RESET_LOCKOUT_TIME - (now - lastAttempt)) / 60000);
-        lockoutTimeRemaining = Math.max(lockoutTimeRemaining, resetLockoutRemaining);
-      }
-    }
-    
-    if (isLocked) {
-      alert(`Account is locked. Please wait ${lockoutTimeRemaining} minutes before trying again.`);
-      return;
-    }
-    
-    // Verify hunter name and security code
-    const user = users[userIndex];
-    if (user.name !== hunterName) {
-      showError('recoveryHunterNameError', 'Hunter name does not match');
-      return;
-    }
-    
-    if (user.securityCode !== securityCode) {
-      showError('recoverySecurityCodeError', 'Invalid security code');
-      return;
-    }
-    
-    // Reset all security locks
-    delete loginAttempts[email];
-    delete resetAttempts[email];
-    localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
-    localStorage.setItem('resetAttempts', JSON.stringify(resetAttempts));
-    
-    // Update password
     users[userIndex].password = newPassword;
     localStorage.setItem('users', JSON.stringify(users));
     
-    alert('Account recovered successfully! You can now login with your new password.');
-    showLogin();
+    showSuccess('✓ Password reset successful! Logging in...');
     
+    setTimeout(() => {
+      switchForm('loginForm');
+      document.getElementById('loginEmail').value = email;
+      document.getElementById('loginPassword').value = newPassword;
+    }, 1500);
   } catch (error) {
-    console.error('Account recovery error:', error);
-    alert('An error occurred during recovery. Please try again.');
-  } finally {
-    // Reset button state
-    recoveryBtn.classList.remove('loading-btn');
-    recoveryBtn.innerHTML = 'Recover Account';
+    showError('resetEmail', 'resetEmailError', 'Reset failed. Try again.');
+    console.error('Reset error:', error);
+    const btn = event?.target;
+    if (btn) setButtonLoading(btn, false);
   }
 }
 
-// Clear all login attempts (for development/testing purposes)
-function clearLoginAttempts() {
-  localStorage.removeItem('loginAttempts');
-  console.log('Login attempts cleared');
-}
+// ===== SECURITY CODE GENERATION =====
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    const securityCodeDisplay = document.getElementById('securityCodeDisplay');
+    if (securityCodeDisplay) {
+      securityCodeDisplay.textContent = generateSecurityCode();
+    }
+  } catch (e) {
+    console.error('Security code error:', e);
+  }
+});
 
-// Add this function to reset attempts when needed
-function resetUserLoginAttempts(email) {
-  const loginAttempts = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
-  delete loginAttempts[email];
-  localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
-}
-
-// Add enter key support
+// Enter key support
 document.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    const activeForm = document.querySelector('.auth-box > div:not([style*="display:none"])');
-    if (activeForm.id === 'login') {
-      handleLogin();
-    } else if (activeForm.id === 'signup') {
-      handleSignup();
-    } else if (activeForm.id === 'forgotPassword') {
-      handlePasswordReset();
+  try {
+    if (e.key === 'Enter') {
+      const activeForm = document.querySelector('.auth-form.active');
+      if (!activeForm) return;
+      
+      if (activeForm.id === 'loginForm') {
+        handleLogin();
+      } else if (activeForm.id === 'signupForm') {
+        handleSignup();
+      } else if (activeForm.id === 'resetForm') {
+        handlePasswordReset();
+      }
     }
+  } catch (e) {
+    console.error('Enter key error:', e);
   }
 });
 
-// Clear old login attempts (older than lockout time) on page load
-window.addEventListener('load', function() {
-  const loginAttempts = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
-  const now = Date.now();
-  let hasChanges = false;
-  
-  for (const email in loginAttempts) {
-    const { lastAttempt } = loginAttempts[email];
-    // If the lockout period has expired, remove the entry
-    if (now - lastAttempt >= LOGIN_LOCKOUT_TIME) {
-      delete loginAttempts[email];
-      hasChanges = true;
-    }
-  }
-  
-  if (hasChanges) {
-    localStorage.setItem('loginAttempts', JSON.stringify(loginAttempts));
-  }
-});
-
-document.getElementById('togglePassword').addEventListener('click', function() {
-  const passwordInput = document.getElementById('loginPassword');
-  if (passwordInput.type === 'password') {
-    passwordInput.type = 'text';
-    this.textContent = '👁️‍🗨️';
-  } else {
-    passwordInput.type = 'password';
-    this.textContent = '👁️';
-  }
-});
-
+console.log('Professional Login System Ready - Solo Leveling Edition');
 </script>
 
 </body>
